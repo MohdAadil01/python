@@ -20,7 +20,7 @@ img = qr.make_image(fill_color=fill_color, back_color=back_color).convert("RGB")
 draw = ImageDraw.Draw(img)
 
 try:
-    font = ImageFont.truetype("arialbd.ttf", 40)
+    font = ImageFont.truetype("arial.ttf", 40)
 except IOError:
     font = ImageFont.load_default()
 
