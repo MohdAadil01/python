@@ -1,14 +1,20 @@
 import os
 from dotenv import load_dotenv
 import requests
+from twilio.rest import Client
 
 load_dotenv()
 
 STOCK_API_KEY = os.getenv("STOCK_API_KEY")
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
+TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
+TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
+TWILIO_PHONE_NO = os.getenv("TWILIO_PHONE_NO")
+YOUR_PHONE_NO = os.getenv("YOUR_PHONE_NO")
 
 STOCK_URL = "https://www.alphavantage.co/query"
 NEWS_URL = "https://newsapi.org/v2/everything"
+TWILIO_URL = "https://verify.twilio.com/v2/"
 
 
 STOCK_NAME = input("Enter the stock symbol for which you want to subscribed.\n")
@@ -18,6 +24,7 @@ stock_params = {
     "symbol" : STOCK_NAME,
     "apikey" : STOCK_API_KEY
 }
+
 response = requests.get(STOCK_URL, params=stock_params)
 data = response.json()["Time Series (Daily)"]
 data_list = [value for (key, value) in data.items()]
@@ -35,5 +42,13 @@ if change_percent > 1:
     }
     news_list = requests.get(NEWS_URL, news_params).json()["articles"][:3]
     news = [f"Headline: {news['title']}. \nBrief: {news['description']}" for news in news_list]
-    print(news)
 
+    client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+
+    for article in news:
+        message = client.messages.create(
+            from_=TWILIO_PHONE_NO,
+            body = article,
+            to = YOUR_PHONE_NO
+        )
+        print("Message send successfully.")
