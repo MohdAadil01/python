@@ -29,5 +29,11 @@ change_percent = (abs(float(yesterday_close) - float(day_before_yesterday_close)
 print(change_percent)
 
 if change_percent > 1:
-    print("more than 1")
+    news_params = {
+        "qInTitle" : STOCK_NAME,
+        "apiKey" : NEWS_API_KEY
+    }
+    news_list = requests.get(NEWS_URL, news_params).json()["articles"][:3]
+    news = [f"Headline: {news['title']}. \nBrief: {news['description']}" for news in news_list]
+    print(news)
 
