@@ -44,3 +44,9 @@ while first <= last:
     movies[last] = temp
     first += 1
     last -= 1
+
+with open("movies.txt", mode="w", encoding="utf-8") as file:
+    for movie in movies:
+        file.write(f"{movie}\n")
+
+print("Successfully scraped and added to movies.txt file.")
